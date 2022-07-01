@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
          basemap: "arcgis-navigation"
        });
 
+
        const view = new EsriMapViw({
          map: map,
          container: "viewDiv",
