@@ -17,16 +17,20 @@
         <label for="floatingInputVehicleName">Vehicle Name</label>
       </div>
       <!--<div class="form-floating mb-3">
-        <input type="text" class="form-control" id="floatingInputVehicleType" placeholder="Vehicle Type" name="vehicleTypeID" [(ngModel)]="vehicle.vehicleTypeID">
-        <label for="floatingInputVehicleType">Vehicle Type</label>
-      </div>-->
+    <input type="text" class="form-control" id="floatingInputVehicleType" placeholder="Vehicle Type" name="vehicleTypeID" [(ngModel)]="vehicle.vehicleTypeID">
+    <label for="floatingInputVehicleType">Vehicle Type</label>
+  </div>-->
 
       <div class="form-floating mb-3">
-        <select [(ngModel)]="vehicleType.vehicleTypeID" class="form-control list-box tri-state valid" id="floatingInputVehicleType" name="vehicleTypeID" >
+        <select name="vehicleTypeID" [(ngModel)]="vehicle.vehicleTypeID" class="form-control list-box tri-state valid" id="floatingInputVehicleType" name="vehicleTypeID">
           <option *ngFor="let vehicleType of vehicleTypes" [value]="vehicleType.vehicleTypeID">{{ vehicleType.typeOfVehicle }}</option>
         </select>
         <label for="floatingInput">Vehicle Type</label>
       </div>
+
+      <!--<select class="form-control" id="field_answer{{i}}" name="field_answer{{i}}" [(ngModel)]="resultAnswer[i].answer" [compareWith]="compareFn">
+        <option [ngValue]="answer" *ngFor="let answer of Question.answers; trackBy: trackAnswerById">{{answer.id}} {{answer.description}}</option>
+      </select>-->
 
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="RegistrationNumber" placeholder="Registration Number" name="registrationNumber" [(ngModel)]="vehicle.registrationNumber">
