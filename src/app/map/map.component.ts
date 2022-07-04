@@ -11,11 +11,17 @@ import esri = __esri;
 export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoadedEvent = new EventEmitter<boolean>();
 
+  @Output() onClickEvent = new EventEmitter<MouseEvent>();
+
   @ViewChild("mapViewNode", { static: true }) private mapViewElement!: ElementRef;
 
   private basemap: string = "arcgis-navigation";
   private center: Array<number> = [-40, 28];
   private zoom: number = 2;
+
+  public handleClick(event: MouseEvent) {
+    this.onClickEvent.emit(event);
+  }
 
   private loaded: boolean = false;
 
@@ -32,10 +38,8 @@ export class MapComponent implements OnInit, OnDestroy {
     this.initializeMap()
       .then(mapView => {
         this.mapView = mapView;
-
         // The map has been initialized
         console.log("mapView ready: ", this.mapView.ready);
-
         this.loaded = this.mapView.ready;
 
         this.mapLoadedEvent.emit(true);
@@ -68,7 +72,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
         EsriMap,
         EsriMapView,
-
+        EsriLocator,
         EsriWidgetLocate,
         EsriWidgetSearch,
         EsriWidgetTrack,
@@ -81,7 +85,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
         "esri/Map",
         "esri/views/MapView",
-
+        "esri/rest/locator",
         "esri/widgets/Locate",
         "esri/widgets/Search",
         "esri/widgets/Track",
@@ -102,6 +106,7 @@ export class MapComponent implements OnInit, OnDestroy {
         type: "simple-marker",
         outline: simpleLineSymbolProperties
       };
+
       const graphicProperties: esri.GraphicProperties = {
         symbol: simpleMarkerSymbolProperties
       };
@@ -117,8 +122,8 @@ export class MapComponent implements OnInit, OnDestroy {
       // Initialize the MapView
       const mapViewProperties: esri.MapViewProperties = {
         container: this.mapViewElement.nativeElement,
-        center: [15.966568, 45.815399], //Longitude, latitude
-        zoom: 13,
+        center: [15.97899, 45.80026], //Longitude, latitude
+        zoom: 12,
         map: map
       };
 
@@ -162,7 +167,7 @@ export class MapComponent implements OnInit, OnDestroy {
       };
       const pointGraphic = new Graphic({
         geometry: point,
-        symbol: simpleMarkerSymbol
+        symbol: simpleMarkerSymbol,
       });
       graphicsLayer.add(pointGraphic);
 
