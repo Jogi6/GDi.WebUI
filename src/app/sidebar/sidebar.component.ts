@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
 import { Vehicle } from '../models/vehicle.model';
 import { VehiclesService } from '../service/vehicles.service';
 import { VehicleType } from '../models/vehicleType.model';
+import { VehicleLocation } from '../models/vehicleLocation.model';
+
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
+
 export class SidebarComponent implements OnInit {
+  
 
   //Array of vehicles
   vehicles: Vehicle[] = [];
@@ -28,6 +32,13 @@ export class SidebarComponent implements OnInit {
     productionYear: '',
     vehicleTypeID: '',
     vehicleType: this.vehicleType
+  }
+
+  vehicleLocation: VehicleLocation = {
+    vehicleLocationID: '',
+    longitude: '',
+    latitude: '',
+    vehicleID: ''
   }
 
   //Constructor for vehicle sevice
@@ -99,6 +110,10 @@ export class SidebarComponent implements OnInit {
     else {
       this.updateVehicle(this.vehicle);
     }
+  }
+
+  //Submits location
+  addLocation() {
   }
 
   //Delete vehicle from list, and refreshes the list

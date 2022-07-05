@@ -7,6 +7,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { TestComponent } from './test/test.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 
@@ -18,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     SidebarComponent
   ],
   imports: [
-    BrowserModule, HttpClientModule, MatGridListModule, HttpClientModule, FormsModule
+    BrowserModule, HttpClientModule, MatGridListModule, HttpClientModule, FormsModule, MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
