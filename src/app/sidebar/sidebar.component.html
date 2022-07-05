@@ -4,34 +4,18 @@
     <span class="fs-4">GDi - Map</span>
   </a>
   <hr>
-  <!--<ul class="nav nav-pills nav-fill">-->
-    <!--<li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="#">Add Vehicle</a>
-    </li>-->
-  <!--</ul>-->
-  <!--<br />-->
   <div class="enterVehicle">
     <form #form="ngForm" (ngSubmit)="addVehicle()">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="floatingInputVehicleName" placeholder="Vehicle Name" name="vehicleName" [(ngModel)]="vehicle.vehicleName">
         <label for="floatingInputVehicleName">Vehicle Name</label>
       </div>
-      <!--<div class="form-floating mb-3">
-    <input type="text" class="form-control" id="floatingInputVehicleType" placeholder="Vehicle Type" name="vehicleTypeID" [(ngModel)]="vehicle.vehicleTypeID">
-    <label for="floatingInputVehicleType">Vehicle Type</label>
-  </div>-->
-
       <div class="form-floating mb-3">
         <select name="vehicleTypeID" [(ngModel)]="vehicle.vehicleTypeID" class="form-control list-box tri-state valid" id="floatingInputVehicleType" name="vehicleTypeID">
           <option *ngFor="let vehicleType of vehicleTypes" [value]="vehicleType.vehicleTypeID">{{ vehicleType.typeOfVehicle }}</option>
         </select>
         <label for="floatingInput">Vehicle Type</label>
       </div>
-
-      <!--<select class="form-control" id="field_answer{{i}}" name="field_answer{{i}}" [(ngModel)]="resultAnswer[i].answer" [compareWith]="compareFn">
-        <option [ngValue]="answer" *ngFor="let answer of Question.answers; trackBy: trackAnswerById">{{answer.id}} {{answer.description}}</option>
-      </select>-->
-
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="RegistrationNumber" placeholder="Registration Number" name="registrationNumber" [(ngModel)]="vehicle.registrationNumber">
         <label for="RegistrationNumber">Registration Number</label>
@@ -43,6 +27,14 @@
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="floatingInputProdactioYear" placeholder="Production Year" name="productionYear" [(ngModel)]="vehicle.productionYear">
         <label for="floatingInputProdactioYear">Production Year</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="floatingInputProdactioYear" placeholder="Longitude" name="longitude" value="">
+        <label for="floatingInputProdactioYear">Longitude</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="floatingInputProdactioYear" placeholder="Latitude" name="latitude" value="">
+        <label for="floatingInputProdactioYear">Latitude</label>
       </div>
       <div class="d-grid gap-2">
         <button class="btn btn-success" type="submit">Enter Vehicle</button>

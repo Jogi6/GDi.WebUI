@@ -9,6 +9,7 @@ import { VehicleType } from '../models/vehicleType.model';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
+
   //Array of vehicles
   vehicles: Vehicle[] = [];
   vehicleTypes: VehicleType[] = [];
@@ -111,7 +112,8 @@ export class SidebarComponent implements OnInit {
   }
 
   // Populates form for adding vehicles
-  populateAddVehicle(vehicle: Vehicle) {
+  populateAddVehicle(vehicle: Vehicle)
+  {
     this.vehicle = vehicle;
     this.vehicle.vehicleType.typeOfVehicle = '0';
     this.vehicle.vehicleType.vehicleTypeID = '0';
