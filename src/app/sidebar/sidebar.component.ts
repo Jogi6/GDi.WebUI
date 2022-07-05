@@ -1,9 +1,9 @@
-import { Component, NgModule, OnInit, Input } from '@angular/core';
+import { Component, NgModule, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Vehicle } from '../models/vehicle.model';
 import { VehiclesService } from '../service/vehicles.service';
 import { VehicleType } from '../models/vehicleType.model';
 import { VehicleLocation } from '../models/vehicleLocation.model';
-import esri = __esri;
+import { MapPoint } from '../models/mapPoint.model';
 
 
 @Component({
@@ -14,8 +14,10 @@ import esri = __esri;
 
 export class SidebarComponent implements OnInit {
 
+  @Output() vehicleChangedEvent = new EventEmitter<VehicleLocation>();
+
   @Input("currentCoordinates")
-  set currentCoordinates(currentCoordinates: esri.Point) {
+  set currentCoordinates(currentCoordinates: MapPoint) {
     this.vehicleLocation.longitude = currentCoordinates.longitude.toFixed(5).toString();
     this.vehicleLocation.latitude = currentCoordinates.latitude.toFixed(5).toString();
   }
@@ -100,7 +102,20 @@ export class SidebarComponent implements OnInit {
 
     this.vehicleLocation.vehicleID = vehicle.vehicleID;
     this.vehicleLocation.vehicle = vehicle;
+    this.getVehicleLocation(this.vehicleLocation);
+    this.vehicleChangedEvent.emit(this.vehicleLocation);
+    
   }
+
+  getVehicleLocation(vehicleLocation: VehicleLocation) {
+    this.vehicleService.getVehicleLocation(this.vehicleLocation)
+      .subscribe(
+        response => {
+          this.vehicleLocation = response;
+        }
+    )
+  }
+
 
   //Submit methode that gets data to API to be stored to database
   addVehicle() {

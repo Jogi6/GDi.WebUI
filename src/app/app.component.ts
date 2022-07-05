@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { VehicleLocation } from './models/vehicleLocation.model';
+import { MapPoint } from './models/mapPoint.model';
 import esri = __esri;
 
 @Component({
@@ -8,12 +10,18 @@ import esri = __esri;
 })
 
 export class AppComponent {
-  public currentCoordinates: esri.Point | undefined ;
+  public currentCoordinates: MapPoint | undefined;
+
+
+
   mapLoadedEvent (status: boolean) {
     console.log('The map loaded: ' + status);
   }
   mapClickEvent(event: esri.ViewClickEvent) {
-    console.log("click: ", event.mapPoint);
-    this.currentCoordinates = event.mapPoint;
+    this.currentCoordinates = { longitude: event.mapPoint.longitude, latitude: event.mapPoint.latitude }
+  }
+  vehicleChangedEvent(event: VehicleLocation) {
+    this.currentCoordinates = { longitude: Number.parseFloat(event.longitude), latitude: Number.parseFloat(event.latitude) }
+    console.log(this.currentCoordinates);
   }
 }

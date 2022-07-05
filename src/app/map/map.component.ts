@@ -1,5 +1,6 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, Input} from '@angular/core';
 import { ILoadScriptOptions, loadCss, loadModules } from 'esri-loader';
+import { MapPoint } from '../models/mapPoint.model';
 import esri = __esri;
 
 @Component({
@@ -11,6 +12,13 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   @Output() mapLoadedEvent = new EventEmitter<boolean>();
   @Output() mapClickEvent = new EventEmitter<esri.ViewClickEvent>();
+
+  @Input("currentCoordinates")
+  set currentCoordinates(currentCoordinates: MapPoint) {
+    this.showPoint(currentCoordinates.longitude, currentCoordinates.latitude).then(() => {
+      console.log("Current Coordinates Changed", currentCoordinates);
+    });
+  }
 
   @ViewChild("mapViewNode", { static: true }) private mapViewElement!: ElementRef;
 
@@ -112,6 +120,10 @@ export class MapComponent implements OnInit {
 
   async mapViewClick(event: esri.ViewClickEvent) {
     this.mapClickEvent.emit(event);
+    await this.showPoint(event.mapPoint.longitude, event.mapPoint.latitude);
+  }
+
+  async showPoint(longitude: number, latitude: number) {
 
     const jsArcgisUrl = "https://js.arcgis.com/4.24/";
     const loadOptions: ILoadScriptOptions = {
@@ -124,12 +136,6 @@ export class MapComponent implements OnInit {
       "esri/Graphic",
     ], loadOptions);
 
-    //Create a point
-    const point = {
-      type: "point",
-      longitude: event.mapPoint.longitude,
-      latitude: event.mapPoint.latitude
-    };
     const simpleMarkerSymbol = {
       type: "simple-marker",
       color: [226, 119, 40],  // Orange
@@ -138,7 +144,14 @@ export class MapComponent implements OnInit {
         width: 1
       }
     };
+    //Create a point
+    const point = {
+      type: "point",
+      longitude: longitude,
+      latitude: latitude
+    };
 
+    //Renders point
     const pointGraphic = new Graphic({
       geometry: point,
       symbol: simpleMarkerSymbol,

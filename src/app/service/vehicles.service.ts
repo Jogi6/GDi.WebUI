@@ -52,4 +52,8 @@ export class VehiclesService {
     vehicleLocation.vehicle.vehicleType.vehicleTypeID = '0';
     return this.http.post<VehicleLocation>(this.baseUrlLocations, vehicleLocation);
   }
+
+  getVehicleLocation(vehicleLocation: VehicleLocation): Observable<VehicleLocation> {
+    return this.http.get<VehicleLocation>(this.baseUrlLocations + '/' + vehicleLocation.vehicleID);
+  }
 }

@@ -1,10 +1,14 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-3" style="padding:unset">
-      <app-sidebar [currentCoordinates]="currentCoordinates"></app-sidebar>
+      <app-sidebar [currentCoordinates]="currentCoordinates"
+                   (vehicleChangedEvent)="vehicleChangedEvent($event)"></app-sidebar>
     </div>
     <div class="col-md-9" style="padding:unset">
-      <div><app-map (mapLoadedEvent)="mapLoadedEvent($event)" (mapClickEvent)="mapClickEvent($event)"></app-map></div>
+      <div><app-map (mapLoadedEvent)="mapLoadedEvent($event)"
+                    (mapClickEvent)="mapClickEvent($event)"
+                    [currentCoordinates]="currentCoordinates">
+        </app-map></div>
     </div>
   </div>
 </div>
