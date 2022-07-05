@@ -35,14 +35,6 @@
           <input type="text" class="form-control" id="floatingInputProdactioYear" placeholder="Production Year" name="productionYear" [(ngModel)]="vehicle.productionYear">
           <label for="floatingInputProdactioYear">Production Year</label>
         </div>
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="floatingInputProdactioYear" placeholder="Longitude" name="longitude" value="">
-          <label for="floatingInputProdactioYear">Longitude</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="floatingInputProdactioYear" placeholder="Latitude" name="latitude" value="">
-          <label for="floatingInputProdactioYear">Latitude</label>
-        </div>
         <div class="d-grid gap-2">
           <button class="btn btn-success" type="submit">Enter Vehicle</button>
         </div>
@@ -57,7 +49,7 @@
         <label for="floatingInputVehicleName">Vehicle ID</label>
       </div>
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="floatingInputVehicleName" placeholder="Vehicle Name">
+        <input type="text" class="form-control" id="floatingInputVehicleName" placeholder="Vehicle Name" name="vehicleName" [(ngModel)]="vehicleLocation.vehicle.vehicleName">
         <label for="floatingInputVehicleName">Vehicle Name</label>
       </div>
       <div class="form-floating mb-3">

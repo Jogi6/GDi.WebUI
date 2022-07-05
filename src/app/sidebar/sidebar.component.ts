@@ -38,7 +38,8 @@ export class SidebarComponent implements OnInit {
     vehicleLocationID: '',
     longitude: '',
     latitude: '',
-    vehicleID: ''
+    vehicleID: '',
+    vehicle: this.vehicle
   }
 
   //Constructor for vehicle sevice
@@ -130,6 +131,9 @@ export class SidebarComponent implements OnInit {
   populateAddVehicle(vehicle: Vehicle)
   {
     this.vehicle = vehicle;
+
+    this.vehicleLocation.vehicleID = vehicle.vehicleID;
+    this.vehicleLocation.vehicle = vehicle;
     this.vehicle.vehicleType.typeOfVehicle = '0';
     this.vehicle.vehicleType.vehicleTypeID = '0';
   }
