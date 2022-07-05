@@ -1,10 +1,10 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-3" style="padding:unset">
-      <app-sidebar></app-sidebar>
+      <app-sidebar [currentCoordinates]="currentCoordinates"></app-sidebar>
     </div>
     <div class="col-md-9" style="padding:unset">
-      <div><app-map (mapLoadedEvent)="mapLoadedEvent($event)"></app-map></div>
+      <div><app-map (mapLoadedEvent)="mapLoadedEvent($event)" (mapClickEvent)="mapClickEvent($event)"></app-map></div>
     </div>
   </div>
 </div>

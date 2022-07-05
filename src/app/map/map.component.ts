@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { ILoadScriptOptions, loadCss, loadModules } from 'esri-loader';
 import esri = __esri;
 
@@ -8,28 +8,21 @@ import esri = __esri;
   styleUrls: ['./map.component.scss']
 })
 
-export class MapComponent implements OnInit, OnDestroy {
+export class MapComponent implements OnInit {
   @Output() mapLoadedEvent = new EventEmitter<boolean>();
-
-  @Output() onClickEvent = new EventEmitter<MouseEvent>();
+  @Output() mapClickEvent = new EventEmitter<esri.ViewClickEvent>();
 
   @ViewChild("mapViewNode", { static: true }) private mapViewElement!: ElementRef;
 
+  //Map properties
   private basemap: string = "arcgis-navigation";
-  private center: Array<number> = [-40, 28];
-  private zoom: number = 2;
-
-  public handleClick(event: MouseEvent) {
-    this.onClickEvent.emit(event);
-  }
+  private center: Array<number> = [15.97899, 45.80026]; //Longitude, latitude
+  private zoom: number = 12;
 
   private loaded: boolean = false;
 
   private mapView: esri.MapView | null = null;
-
-  get mapLoaded(): boolean {
-    return this.loaded;
-  }
+  private graphicsLayer: esri.GraphicsLayer | null = null;
 
   constructor() { }
 
@@ -41,16 +34,11 @@ export class MapComponent implements OnInit, OnDestroy {
         // The map has been initialized
         console.log("mapView ready: ", this.mapView.ready);
         this.loaded = this.mapView.ready;
-
-        this.mapLoadedEvent.emit(true);
+      }).catch(error => {
+        this.loaded = false;
+      }).finally(() => {
+        this.mapLoadedEvent.emit(this.loaded);
       });
-  }
-
-  ngOnDestroy() {
-    if (this.mapView) {
-      // Destroy the map view
-      /*this.mapView.container = null;*/
-    }
   }
 
   async initializeMap(): Promise<esri.MapView> {
@@ -67,50 +55,19 @@ export class MapComponent implements OnInit, OnDestroy {
       // Load the modules for the ArcGIS API for JavaScript
       const [
         EsriConfig,
-
-        EsriGraphic,
-
         EsriMap,
         EsriMapView,
-        EsriLocator,
-        EsriWidgetLocate,
         EsriWidgetSearch,
-        EsriWidgetTrack,
-        Graphic,
         GraphicsLayer
       ] = await loadModules([
         "esri/config",
-
-        "esri/Graphic",
-
         "esri/Map",
         "esri/views/MapView",
-        "esri/rest/locator",
-        "esri/widgets/Locate",
         "esri/widgets/Search",
-        "esri/widgets/Track",
-        "esri/Graphic",
         "esri/layers/GraphicsLayer"
       ], loadOptions);
 
       EsriConfig.apiKey = "AAPKb494dde343ea44b59aa1fe40a6691914sM8gWhu0aqj5b6Mxm5DtMIzjrj7f_TPDTGHP5tjJo3rNiuDwkOBvUAiBQxuvUWE1";
-
-      // Initialize the Graphic
-      const simpleLineSymbolProperties: esri.SimpleLineSymbolProperties = {
-        color: "#efefef",
-        width: "1.5px"
-      };
-      const simpleMarkerSymbolProperties: esri.SimpleMarkerSymbolProperties = {
-        color: "green",
-        size: "12px",
-        type: "simple-marker",
-        outline: simpleLineSymbolProperties
-      };
-
-      const graphicProperties: esri.GraphicProperties = {
-        symbol: simpleMarkerSymbolProperties
-      };
-      const graphic: esri.Graphic = new EsriGraphic(graphicProperties);
 
       // Initialize the Map
       const mapProperties: esri.MapProperties = {
@@ -122,67 +79,26 @@ export class MapComponent implements OnInit, OnDestroy {
       // Initialize the MapView
       const mapViewProperties: esri.MapViewProperties = {
         container: this.mapViewElement.nativeElement,
-        center: [15.97899, 45.80026], //Longitude, latitude
-        zoom: 12,
+        center: this.center,
+        zoom: this.zoom,
         map: map
       };
 
       const mapView: esri.MapView = new EsriMapView(mapViewProperties);
 
-      // Initialize the Locate Widget
-      const locateProperties: esri.LocateProperties = {
-        view: mapView,
-        useHeadingEnabled: false,
-        goToOverride: function (view, options) {
-          options.target.scale = 1500;
-          return view.goTo(options.target);
-        }
-      }
+      mapView.on("click", this.mapViewClick.bind(this));
 
-      const locate: esri.Locate = new EsriWidgetLocate(locateProperties);
+      const graphicsLayer: esri.GraphicsLayer = new GraphicsLayer();
+      map.add(graphicsLayer);
+      this.graphicsLayer = graphicsLayer;
 
       // Initialize the Search Widget
       const searchProperties: esri.widgetsSearchProperties = {
         view: mapView
       }
-
       const search: esri.widgetsSearch = new EsriWidgetSearch(searchProperties);
 
-      //Create a point
-      const graphicsLayer = new GraphicsLayer();
-      map.add(graphicsLayer);
-
-      const point = { 
-        type: "point",
-        longitude: 15.966568,
-        latitude: 45.815399
-      };
-      const simpleMarkerSymbol = {
-        type: "simple-marker",
-        color: [226, 119, 40],  // Orange
-        outline: {
-          color: [255, 255, 255], // White
-          width: 1
-        }
-      };
-      const pointGraphic = new Graphic({
-        geometry: point,
-        symbol: simpleMarkerSymbol,
-      });
-      graphicsLayer.add(pointGraphic);
-
-      // Initialize the Track Widget
-      const trackProperties: esri.TrackProperties = {
-        view: mapView,
-        graphic: graphic,
-        useHeadingEnabled: true,
-      }
-
-      const track: esri.Track = new EsriWidgetTrack(trackProperties);
-
-      mapView.ui.add(locate, "top-left");
       mapView.ui.add(search, "top-right");
-      mapView.ui.add(track, "top-left");
 
       await mapView.when();
 
@@ -192,5 +108,42 @@ export class MapComponent implements OnInit, OnDestroy {
 
       throw (error);
     }
+  }
+
+  async mapViewClick(event: esri.ViewClickEvent) {
+    this.mapClickEvent.emit(event);
+
+    const jsArcgisUrl = "https://js.arcgis.com/4.24/";
+    const loadOptions: ILoadScriptOptions = {
+      url: jsArcgisUrl,
+    };
+
+    const [
+      Graphic,
+    ] = await loadModules([
+      "esri/Graphic",
+    ], loadOptions);
+
+    //Create a point
+    const point = {
+      type: "point",
+      longitude: event.mapPoint.longitude,
+      latitude: event.mapPoint.latitude
+    };
+    const simpleMarkerSymbol = {
+      type: "simple-marker",
+      color: [226, 119, 40],  // Orange
+      outline: {
+        color: [255, 255, 255], // White
+        width: 1
+      }
+    };
+
+    const pointGraphic = new Graphic({
+      geometry: point,
+      symbol: simpleMarkerSymbol,
+    });
+    this.graphicsLayer?.removeAll();
+    this.graphicsLayer?.add(pointGraphic);
   }
 }

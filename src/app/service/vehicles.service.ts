@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Vehicle } from '../models/vehicle.model';
 import { Observable } from 'rxjs';
 import { VehicleType } from '../models/vehicleType.model';
+import { VehicleLocation } from '../models/vehicleLocation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class VehiclesService {
   //API base url
   baseUrl = 'https://localhost:7285/api/vehicles';
   baseUrlType = 'https://localhost:7285/api/vehicletypes';
+  baseUrlLocations = 'https://localhost:7285/api/vehiclelocation';
 
   //Http Constractor
   constructor(private http: HttpClient) { }
@@ -41,5 +43,13 @@ export class VehiclesService {
   //Get a list of vehicles type
   getVehiclesTypes(): Observable<VehicleType[]> {
     return this.http.get<VehicleType[]>(this.baseUrlType);
+  }
+
+  //Add vehicle location service
+  addVehicleLocation(vehicleLocation: VehicleLocation): Observable<VehicleLocation> {
+    vehicleLocation.vehicleLocationID = '0';
+    vehicleLocation.vehicle.vehicleType.typeOfVehicle = '0';
+    vehicleLocation.vehicle.vehicleType.vehicleTypeID = '0';
+    return this.http.post<VehicleLocation>(this.baseUrlLocations, vehicleLocation);
   }
 }

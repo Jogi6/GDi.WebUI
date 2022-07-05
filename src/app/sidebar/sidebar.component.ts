@@ -1,8 +1,9 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit, Input } from '@angular/core';
 import { Vehicle } from '../models/vehicle.model';
 import { VehiclesService } from '../service/vehicles.service';
 import { VehicleType } from '../models/vehicleType.model';
 import { VehicleLocation } from '../models/vehicleLocation.model';
+import esri = __esri;
 
 
 @Component({
@@ -12,7 +13,12 @@ import { VehicleLocation } from '../models/vehicleLocation.model';
 })
 
 export class SidebarComponent implements OnInit {
-  
+
+  @Input("currentCoordinates")
+  set currentCoordinates(currentCoordinates: esri.Point) {
+    this.vehicleLocation.longitude = currentCoordinates.longitude.toFixed(5).toString();
+    this.vehicleLocation.latitude = currentCoordinates.latitude.toFixed(5).toString();
+  }
 
   //Array of vehicles
   vehicles: Vehicle[] = [];
@@ -84,9 +90,16 @@ export class SidebarComponent implements OnInit {
       .subscribe(
         response => {
           this.vehicleTypes = response;
-          console.log(this.vehicleTypes);
         }
       )
+  }
+
+  // Populates form for adding vehicles
+  populateAddVehicle(vehicle: Vehicle) {
+    this.vehicle = vehicle;
+
+    this.vehicleLocation.vehicleID = vehicle.vehicleID;
+    this.vehicleLocation.vehicle = vehicle;
   }
 
   //Submit methode that gets data to API to be stored to database
@@ -115,6 +128,19 @@ export class SidebarComponent implements OnInit {
 
   //Submits location
   addLocation() {
+    this.vehicleService.addVehicleLocation(this.vehicleLocation)
+      .subscribe(
+        response => {
+          this.getAllVehicles();
+          this.vehicleLocation = {
+            vehicleLocationID: '',
+            longitude: '',
+            latitude: '',
+            vehicleID: '',
+            vehicle: this.vehicle
+          };
+        }
+      )
   }
 
   //Delete vehicle from list, and refreshes the list
@@ -125,17 +151,6 @@ export class SidebarComponent implements OnInit {
           this.getAllVehicles();
         }
     )
-  }
-
-  // Populates form for adding vehicles
-  populateAddVehicle(vehicle: Vehicle)
-  {
-    this.vehicle = vehicle;
-
-    this.vehicleLocation.vehicleID = vehicle.vehicleID;
-    this.vehicleLocation.vehicle = vehicle;
-    this.vehicle.vehicleType.typeOfVehicle = '0';
-    this.vehicle.vehicleType.vehicleTypeID = '0';
   }
 
   //Update Vehicle
