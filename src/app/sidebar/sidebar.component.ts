@@ -75,6 +75,13 @@ export class SidebarComponent implements OnInit {
           vehicleTypeID: '',
           vehicleType: this.vehicleType
         };
+        this.vehicleLocation = {
+          vehicleLocationID: '',
+          longitude: '0',
+          latitude: '0',
+          vehicleID: '',
+          vehicle: this.vehicle
+        };
       }
     )
     await this.vehicleService.getVehiclesTypes()
@@ -103,10 +110,13 @@ export class SidebarComponent implements OnInit {
     this.vehicleLocation.vehicleID = vehicle.vehicleID;
     this.vehicleLocation.vehicle = vehicle;
     this.getVehicleLocation(this.vehicleLocation);
+    this.getVehicleType(this.vehicleType);
+
     this.vehicleChangedEvent.emit(this.vehicleLocation);
     
   }
 
+  //Gets selected vehicle location
   getVehicleLocation(vehicleLocation: VehicleLocation) {
     this.vehicleService.getVehicleLocation(this.vehicleLocation)
       .subscribe(
@@ -114,6 +124,16 @@ export class SidebarComponent implements OnInit {
           this.vehicleLocation = response;
         }
     )
+  }
+
+  //Gets selected vehicle location
+  getVehicleType(vehicleType: VehicleType) {
+    this.vehicleService.getVehicleType(this.vehicleType)
+      .subscribe(
+        response => {
+          this.vehicleType = response;
+        }
+      )
   }
 
 
@@ -143,19 +163,17 @@ export class SidebarComponent implements OnInit {
 
   //Submits location
   addLocation() {
-    this.vehicleService.addVehicleLocation(this.vehicleLocation)
-      .subscribe(
-        response => {
-          this.getAllVehicles();
-          this.vehicleLocation = {
-            vehicleLocationID: '',
-            longitude: '',
-            latitude: '',
-            vehicleID: '',
-            vehicle: this.vehicle
-          };
-        }
-      )
+    if (this.vehicleLocation.vehicleID === '') {
+      this.vehicleService.addVehicleLocation(this.vehicleLocation)
+        .subscribe(
+          response => {
+            this.getAllVehicles();
+          }
+        )
+    }
+    else {
+      this.updateVehicleLocation(this.vehicleLocation);
+    }
   }
 
   //Delete vehicle from list, and refreshes the list
@@ -171,6 +189,18 @@ export class SidebarComponent implements OnInit {
   //Update Vehicle
   updateVehicle(vehicle: Vehicle) {
     this.vehicleService.updateVehicle(vehicle)
+      .subscribe(
+        response => {
+          this.getAllVehicles();
+        }
+      )
+  }
+
+  //Update Vehicle location
+  updateVehicleLocation(vehicleLocation: VehicleLocation) {
+    vehicleLocation.vehicle = this.vehicle;
+    vehicleLocation.vehicle.vehicleType = this.vehicleType;
+    this.vehicleService.updateVehicleLocation(vehicleLocation)
       .subscribe(
         response => {
           this.getAllVehicles();

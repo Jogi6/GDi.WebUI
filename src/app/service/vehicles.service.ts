@@ -53,7 +53,18 @@ export class VehiclesService {
     return this.http.post<VehicleLocation>(this.baseUrlLocations, vehicleLocation);
   }
 
+  //Gets location for singe vehicle
   getVehicleLocation(vehicleLocation: VehicleLocation): Observable<VehicleLocation> {
     return this.http.get<VehicleLocation>(this.baseUrlLocations + '/' + vehicleLocation.vehicleID);
+  }
+
+  //Gets vehicle type
+  getVehicleType(vehicleType: VehicleType): Observable<VehicleType> {
+    return this.http.get<VehicleType>(this.baseUrlType + '/' + vehicleType.vehicleTypeID);
+  }
+
+  //Servisce to update vehicle information
+  updateVehicleLocation(vehicleLocation: VehicleLocation): Observable<VehicleLocation> {
+    return this.http.put<VehicleLocation>(this.baseUrlLocations + '/' + vehicleLocation.vehicleLocationID, vehicleLocation);
   }
 }

@@ -45,6 +45,10 @@
   <div id="addLocation" class="tabcontent">
     <form #form="ngForm" (ngSubmit)="addLocation()">
       <div class="form-floating mb-3">
+        <input type="text" hidden="hidden" class="form-control" id="floatingInputVehicleName" name="vehicleLocationID" [(ngModel)]="vehicleLocation.vehicleLocationID">
+        <label for="floatingInputVehicleName">Vehicle ID</label>
+      </div>
+      <div class="form-floating mb-3">
         <input type="text" hidden="hidden" class="form-control" id="floatingInputVehicleName" name="vehicleID" [(ngModel)]="vehicleLocation.vehicleID">
         <label for="floatingInputVehicleName">Vehicle ID</label>
       </div>
