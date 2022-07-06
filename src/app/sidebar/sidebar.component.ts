@@ -163,7 +163,7 @@ export class SidebarComponent implements OnInit {
 
   //Submits location
   addLocation() {
-    if (this.vehicleLocation.vehicleID === '') {
+    if (this.vehicleLocation.vehicleLocationID === '') {
       this.vehicleService.addVehicleLocation(this.vehicleLocation)
         .subscribe(
           response => {
